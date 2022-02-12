@@ -15,12 +15,15 @@ const conceal = keyframes`
 
 const reveal = keyframes`
   0% {
+    opacity: 0;
     transform: scale(1, 0);
   }
   50% {
+    opacity: 100;
     transform: scale(1, 0);
   }
   100% {
+    opacity: 100;
     transform: scale(1, 1);
   }
 `;
@@ -64,6 +67,7 @@ export const GuessPanel = styled(Panel)<{
 export const RevealedPanel = styled(Panel)<{
   color?: Color;
 }>`
+  opacity: 0;
   background-color: ${({ color }) =>
     color === "g"
       ? "#538d4e"
