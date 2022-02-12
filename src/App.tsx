@@ -1,26 +1,52 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Dispatch, useEffect, useReducer } from "react";
+import Wordle from "./components/Wordle";
+import { Action, applyAction, getInitialState } from "./model/State";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+function useKeyboardEvent(dispatch: Dispatch<Action>) {
+  useEffect(() => {
+    function handleKeyEvent(e: KeyboardEvent) {
+      if (e.key === "Enter") {
+        e.stopPropagation();
+        dispatch({ type: "confirm" });
+        return;
+      }
+
+      if (e.key === "Backspace") {
+        e.stopPropagation();
+        dispatch({ type: "del" });
+        return;
+      }
+
+      if (
+        e.shiftKey ||
+        e.ctrlKey ||
+        e.altKey ||
+        e.metaKey ||
+        !e.key.match(/^[a-z]{1,1}$/)
+      ) {
+        return;
+      }
+
+      e.stopPropagation();
+      dispatch({ type: "char", payload: e.key });
+    }
+
+    window.addEventListener("keydown", handleKeyEvent);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyEvent);
+    };
+  }, [dispatch]);
 }
 
-export default App;
+export default function App() {
+  const [{ attempts }, dispatch] = useReducer(
+    applyAction,
+    "query",
+    getInitialState
+  );
+
+  useKeyboardEvent(dispatch);
+
+  return <Wordle rows={attempts} />;
+}
