@@ -1,7 +1,7 @@
 import styled, { keyframes } from "styled-components";
 import { Color } from "../model/Color";
 
-const guess = keyframes`
+const conceal = keyframes`
   0% {
     transform: scale(1, 1);
   }
@@ -54,11 +54,11 @@ export const Panel = styled.div<{ effectDelay?: number }>`
 `;
 
 export const GuessPanel = styled(Panel)<{
-  color?: Color;
+  animate: boolean;
 }>`
   box-sizing: border-box;
   border: 2px solid #3a3a3c;
-  animation-name: ${({ color }) => (color === undefined ? undefined : guess)};
+  animation-name: ${({ animate }) => (animate ? conceal : undefined)};
 `;
 
 export const RevealedPanel = styled(Panel)<{
@@ -90,7 +90,7 @@ export function Cell({
 }) {
   return (
     <CellTemplate mb={mb} mr={mr}>
-      <GuessPanel color={color} effectDelay={effectDelay}>
+      <GuessPanel animate={color !== undefined} effectDelay={effectDelay}>
         {children}
       </GuessPanel>
       <RevealedPanel color={color} effectDelay={effectDelay}>
