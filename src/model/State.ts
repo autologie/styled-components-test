@@ -1,5 +1,5 @@
 import { MAX_ATTEMPTS, VALID_WORDS, WORD_LENGTH } from "../const";
-import { isSolved, Attempt } from "./Attempt";
+import { isSolved, Attempt, finishEditing } from "./Attempt";
 
 export interface State {
   answer: string;
@@ -32,7 +32,7 @@ export function applyAction(state: State, action: Action): State {
   }
 
   switch (action.type) {
-    case "char": {
+    case "char":
       return {
         ...state,
         attempts: state.attempts.map((attempt) =>
@@ -41,8 +41,7 @@ export function applyAction(state: State, action: Action): State {
             : attempt
         ),
       };
-    }
-    case "del": {
+    case "del":
       return {
         ...state,
         attempts: state.attempts.map((attempt) =>
@@ -51,7 +50,6 @@ export function applyAction(state: State, action: Action): State {
             : attempt
         ),
       };
-    }
     case "confirm":
       const editing = state.attempts.findIndex((attempt) => attempt.isEditing);
 
@@ -66,21 +64,7 @@ export function applyAction(state: State, action: Action): State {
         ...state,
         attempts: state.attempts
           .map((attempt, row) =>
-            row === editing
-              ? {
-                  ...attempt,
-                  isEditing: false,
-                  colors: attempt.word
-                    .split("")
-                    .map((ch, i) =>
-                      ch === state.answer[i]
-                        ? "g"
-                        : state.answer.includes(ch)
-                        ? "y"
-                        : "b"
-                    ),
-                }
-              : attempt
+            row === editing ? finishEditing(attempt, state.answer) : attempt
           )
           .concat([{ isEditing: true, word: "" }]),
       };
