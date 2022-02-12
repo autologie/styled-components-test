@@ -14,16 +14,16 @@ const guess = keyframes`
 `;
 
 const reveal = keyframes`
-    0% {
-      transform: scale(1, 0);
-    }
-    50% {
-      transform: scale(1, 0);
-    }
-    100% {
-      transform: scale(1, 1);
-    }
-  `;
+  0% {
+    transform: scale(1, 0);
+  }
+  50% {
+    transform: scale(1, 0);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+`;
 
 export const CellTemplate = styled.div<{
   mb?: boolean;
