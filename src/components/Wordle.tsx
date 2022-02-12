@@ -10,11 +10,22 @@ const WordleTemplate = styled.div`
   padding: 2rem;
 `;
 
-export default function Wordle({ rows }: { rows: Attempt[] }) {
+export default function Wordle({
+  rows,
+  onAnimationEnd,
+}: {
+  rows: Attempt[];
+  onAnimationEnd: () => void;
+}) {
   return (
     <WordleTemplate>
       {Array.from({ length: MAX_ATTEMPTS }).map((_, row) => (
-        <Row key={row} mb={row !== MAX_ATTEMPTS - 1} attempt={rows[row]} />
+        <Row
+          key={row}
+          mb={row !== MAX_ATTEMPTS - 1}
+          attempt={rows[row]}
+          onAnimationEnd={onAnimationEnd}
+        />
       ))}
     </WordleTemplate>
   );

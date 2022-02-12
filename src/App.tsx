@@ -1,4 +1,4 @@
-import { Dispatch, useEffect, useReducer } from "react";
+import { Dispatch, useCallback, useEffect, useReducer } from "react";
 import Wordle from "./components/Wordle";
 import { Action, applyAction, getInitialState } from "./model/State";
 
@@ -45,8 +45,12 @@ export default function App() {
     "query",
     getInitialState
   );
+  const handleAnimationEnd = useCallback(
+    () => dispatch({ type: "effectDone" }),
+    []
+  );
 
   useKeyboardEvent(dispatch);
 
-  return <Wordle rows={attempts} />;
+  return <Wordle rows={attempts} onAnimationEnd={handleAnimationEnd} />;
 }

@@ -17,7 +17,8 @@ function isPlaying(state: State): boolean {
 export type Action =
   | { type: "confirm" }
   | { type: "char"; payload: string }
-  | { type: "del" };
+  | { type: "del" }
+  | { type: "effectDone" };
 
 export function getInitialState(answer: string): State {
   return {
@@ -52,12 +53,19 @@ export function applyAction(state: State, action: Action): State {
       };
     case "confirm":
       const editing = state.attempts.findIndex((attempt) => attempt.isEditing);
+      const word = state.attempts[editing]?.word;
 
-      if (
-        editing === -1 ||
-        !VALID_WORDS.includes(state.attempts[editing].word)
-      ) {
+      if (word === undefined || word.length < WORD_LENGTH) {
         return state;
+      }
+
+      if (!VALID_WORDS.includes(word)) {
+        return {
+          ...state,
+          attempts: state.attempts.map((attempt) =>
+            attempt.isEditing ? { ...attempt, effect: "unacceptable" } : attempt
+          ),
+        };
       }
 
       return {
@@ -67,6 +75,14 @@ export function applyAction(state: State, action: Action): State {
             row === editing ? finishEditing(attempt, state.answer) : attempt
           )
           .concat([{ isEditing: true, word: "" }]),
+      };
+    case "effectDone":
+      return {
+        ...state,
+        attempts: state.attempts.map((attempt) => ({
+          ...attempt,
+          effect: undefined,
+        })),
       };
   }
 }
