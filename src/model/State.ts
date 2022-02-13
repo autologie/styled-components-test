@@ -55,11 +55,11 @@ export function applyAction(state: State, action: Action): State {
       const editing = state.attempts.findIndex((attempt) => attempt.isEditing);
       const word = state.attempts[editing]?.word;
 
-      if (word === undefined || word.length < WORD_LENGTH) {
-        return state;
-      }
-
-      if (!VALID_WORDS.includes(word)) {
+      if (
+        word === undefined ||
+        word.length < WORD_LENGTH ||
+        !VALID_WORDS.includes(word)
+      ) {
         return {
           ...state,
           attempts: state.attempts.map((attempt) =>
